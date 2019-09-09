@@ -1,3 +1,23 @@
+# Alexis Notes :
+
+### Gilded rose new logic explaination
+
+For each item :
+
+1) ClassifyItem service is responsible for finding item kind (Legendary, Conjured, Normal, etc...) based on item name and wraps it with associated item class.
+2) We skip to next item if item is legendary because it can't be sold or decrease in quality.
+3) Each wrapper has a specific coefficient which defines how item evolves (based on sell_in date and item kind).
+4) This coefficient is used to update the item quality property => update_quality! method
+5) Then, item sell_in property is updated => update_sell_in!
+
+### Run specs :
+
+To run the entire test suite : ```rake spec```
+
+To run a specific test/list of tests ```bundle exec rspec <path>```
+
+# Skello Notes :
+
 You'll find 2 parts to this test:
 
 **1/ Questions**
