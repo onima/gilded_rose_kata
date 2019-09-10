@@ -1,3 +1,7 @@
 source 'https://rubygems.org'
-gem 'rspec'
-gem 'rspec-given'
+
+group :test, :development do
+  gem 'rspec'
+  gem 'rspec-given'
+  gem 'pry'
+end
