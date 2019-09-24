@@ -64,23 +64,30 @@ tout en réduisant la possibilité de bugs et de structures non conformes
   last_login: datatime
 }
 
-- Entity (Type de notification : vient d'un user, d'un groupe, d'une page, etc...)
+- Entity (Notification : vient d'un user, d'un groupe specific, d'une page facebook specific, etc...)
 
 {
   id: int (pk)
   name: varchar
-  category: smallint
+  entity_category_id: smallint (fk)
+  user_id: int (fk) can be nil
   created_at: datetime
   updated_at: datetime
+}
+
+- Entity Category (User / Group / Page)
+
+{
+  id: int (pk)
+  category: 'User'
 }
 
 - Post
 
 {
-  id: int(pk)
-  user_id: int
+  id: int (pk)
   content: varchar
-  entity_id: int
+  entity_id: int (fk)
   created_at: datetime
   updated_at: datetime
 }
@@ -89,9 +96,20 @@ tout en réduisant la possibilité de bugs et de structures non conformes
 
 {
   #pk = user_id + entity_id
-  user_id: int
-  entity_id: int
-  type: tinyint # Si un User ou une Entity est suivis
+  user_id: int (fk)
+  entity_id: int (fk)
+  created_at: datetime
+  updated_at: datetime
+}
+
+- PostSentToUser
+
+{
+  id: int (pk)
+  post_id: int (fk)
+  user_id: int (fk)
+  entity_id: int (fk)
+  sent_at: datetime can be nil
   created_at: datetime
   updated_at: datetime
 }
@@ -100,7 +118,7 @@ tout en réduisant la possibilité de bugs et de structures non conformes
 Flow ->
 1) Entity ou User créer un nouveau Post (par exemple POST requête via une REST API).
 2) La requête passe par un web server puis un app server et le post est sauvegarde dans une database
-3) Service / Script (par exemple system de callback une fois que le message est sauvegarde) qui génère/push plusieurs messages pour chaque follower du post à travers un message broker(par exemple RabbitMQ)
+3) Service / Script (par exemple system de callback une fois que le message est sauvegarde) qui génère/push plusieurs messages pour chaque follower du post à travers un message broker(par exemple RabbitMQ). Possibilite de run un backgroundjob regulierement pour send les posts qui n'auraient pas ete envoye.
 4) Creation d'un service 'Notification Service' avec l'utilisation de Server-Sent Events(SEE) technologie comme "Push model / Fan-out-on-write" protocole. Moins complique à implémenter que le web socket protocole et notre architecture ne nécessité pas un 'bi-directional communication channel'. On à seulement besoin d'une communication server -> client
 4) Client(User browser) <-- 'Notification Service' <--> Message Broker
 - Quand le client se connecte, 'Notificiation Service' consume les messages pour le client et envoi les informations au client
@@ -109,9 +127,18 @@ Flow ->
 
 >
 
-GameMaster # Initialise le game state / Définis les règles du jeu (Par exemple, le nombre de bateaux et combien pour chaque type) / Gère les actions du current joueur (place_boat / shoot boat)
+Rules # Regles du jeu / Définis les règles du jeu (Par exemple, le nombre de bateaux et combien pour chaque type)
+{
+  battleship: 1
+  cruiser: 2
+  destroyer: 3
+}
+
+
+GameMaster # Initialise le game state / rules / Gère les actions du current joueur (place_boat / shoot boat) / Check score
 
 {
+  rules: rules
   game_state: game_state
 }
 
@@ -134,8 +161,8 @@ Player # Pouvoir consulter L'état de sa propre grille / celle de l'adversaire /
 
 {
   id: integer
-  grid: grid
-  opponent_grid: grid
+  grid: grid #freeze (only game master can update this grid)
+  opponent_grid: grid #freeze (only game master can update this grid)
   ships: ships
 }
 
@@ -150,6 +177,22 @@ Box
 {
   id: string # "A1", "A2", etc..
   combat_status: string # "hit" / "miss"
+  location_status: string # "empty water" / "ship structure"
+}
+
+# Alternatively for boxes
+
+OpponentBox
+
+{
+  id: string # "A1", "A2", etc..
+  combat_status: string # "hit" / "miss"
+}
+
+PersonalBox
+
+{
+  id: string # "A1", "A2", etc..
   location_status: string # "empty water" / "ship structure"
 }
 
