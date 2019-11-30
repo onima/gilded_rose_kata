@@ -10,21 +10,23 @@ For each item :
 4) This coefficient is used to update the item quality property => update_quality! method
 5) Then, item sell_in property is updated => update_sell_in!
 
+## Installation Hints
+
+The easiest way is to use bundler to install the dependencies. To do so, you need to install the bundler gem if you haven't already done so
+
+    gem install bundler
+
+run bundler
+
+    bundle
+
 ### Run specs :
 
 To run the entire test suite : ```rake spec```
 
 To run a specific test/list of tests ```bundle exec rspec <path>```
 
-# Skello Notes :
-
-You'll find 2 parts to this test:
-
-**1/ Questions**
-
-Take a look at questions.txt and answer the questions presented to you.
-
-**2/ Gilded Rose**
+# The Gilded Rose Kata
 
 The gilded rose kata is a common exercise amongst developers, and will test your refactoring and OOP knowledge.
 The idea is to add the "Conjured" item type, and while doing so, refactor the current code.
@@ -33,10 +35,6 @@ At the end of the exercise, the process should respect OOP principles (SOLID) an
 You're welcome to add as many classes, methods as needed, and modify/add unit tests if necessary.
 
 We'll be looking for a safe, scalable, performant code.
-
-*Any questions ? [samy@skello.io](mailto:samy@skello.io)*
-
-# the Gilded Rose Kata
 
 Hi and welcome to team Gilded Rose. As you know, we are a small inn
 with a prime location in a prominent city run by a friendly innkeeper
@@ -84,18 +82,3 @@ Just for clarification, an item can never have its Quality increase
 above 50, however "Sulfuras" is a legendary item and as such its
 Quality is 80 and it never alters.
 
-## Installation Hints
-
-The easiest way is to use bundler to install the dependencies. To do so, you need to install the bundler gem if you haven't already done so
-
-    gem install bundler
-
-run bundler
-
-    bundle
-
-and should be ready to go. Alternatively, you can install the dependencies one by one using gem install, e.g.
-
-    gem install rspec-given
-
-Have a look at the Gemfile for all dependencies.
